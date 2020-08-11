@@ -1,3 +1,3 @@
-# AttendanceControlMvnHib
+# WeeklyScheduler
 # WeeklyScheduler
 # WeeklyScheduler

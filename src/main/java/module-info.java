@@ -15,10 +15,10 @@ module AttendanceControlMaven {
     requires spring.beans;
 
 
-    opens com.JGG.AttendanceControl;
-    opens com.JGG.AttendanceControl.entity;
-    opens com.JGG.AttendanceControl.controller;
+    opens com.JGG.WeeklyScheduler;
+    opens com.JGG.WeeklyScheduler.entity;
+    opens com.JGG.WeeklyScheduler.controller;
     opens view;
 
-    exports com.JGG.AttendanceControl.controller;
+    exports com.JGG.WeeklyScheduler.controller;
 }
