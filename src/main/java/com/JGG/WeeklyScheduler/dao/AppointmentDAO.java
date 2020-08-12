@@ -15,7 +15,7 @@ public class AppointmentDAO {
         // Database replicator
         Appointment appointment = new Appointment("VET", "pet", "Client", "Montejo", "Consulta", "Garrapatas", LocalDate.now(), LocalTime.now());
         Appointment appointment2 = new Appointment("VET2", "pet", "Client", "Montejo", "Consulta", "Garrapatas", LocalDate.now().plusDays(2), LocalTime.now().plusHours(1));
-        Appointment appointment3 = new Appointment("VET2", "pet", "Client", "Montejo", "Consulta", "Garrapatas", LocalDate.now().plusDays(3), LocalTime.now().minusHours(3));
+        Appointment appointment3 = new Appointment("VET2", "pet", "Client", "Montejo", "Consulta", "Garrapatas", LocalDate.of(2020,8,11), LocalTime.of(17,0));
 
         List<Appointment> appointments = new ArrayList<>();
         appointments.add(appointment);
