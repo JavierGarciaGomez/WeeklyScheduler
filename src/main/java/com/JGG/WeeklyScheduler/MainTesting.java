@@ -10,7 +10,8 @@ import java.util.Objects;
 
 public class MainTesting extends Application {
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("view/Calendar.fxml")));
+        //Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("view/CalendarTes.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("view/Calendar2.fxml")));
         stage.setTitle("Calendar");
         stage.setScene(new Scene(root));
         stage.show();

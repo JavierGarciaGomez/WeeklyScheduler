@@ -73,7 +73,7 @@ public class CalendarController implements Initializable {
                 //todo change the name and add styles
                 vBox.getStyleClass().add("calendar_pane");
                 // todo check if neccesary vBox.setMinWidth(wee);
-                vBox.setMinWidth(daysOfWeekHeader.getPrefWidth()/7);
+                vBox.setMaxWidth(daysOfWeekHeader.getPrefWidth()/7);
                 System.out.println(daysOfWeekHeader.getWidth());
                 System.out.println(daysOfWeekHeader.getPrefWidth());
                 System.out.println(daysOfWeekHeader.getMaxWidth());

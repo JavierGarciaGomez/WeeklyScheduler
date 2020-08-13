@@ -1,16 +1,31 @@
 package com.JGG.WeeklyScheduler.entity;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@Entity
+@Table(name="appointments")
 public class Appointment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
+    private int id;
+    @Column(name="veterinarian")
     private String veterinarian;
+    @Column(name="petName")
     private String petName;
+    @Column(name="clientName")
     private String clientName;
+    @Column(name="branch")
     private String branch;
+    @Column(name="service")
     private String service;
+    @Column(name="motive")
     private String motive;
+    @Column(name="date")
     private LocalDate date;
+    @Column(name="time")
     private LocalTime time;
 
     public Appointment() {
@@ -25,6 +40,14 @@ public class Appointment {
         this.motive = motive;
         this.date = date;
         this.time = time;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getVeterinarian() {
@@ -94,7 +117,8 @@ public class Appointment {
     @Override
     public String toString() {
         return "Appointment{" +
-                "veterinarian='" + veterinarian + '\'' +
+                "id=" + id +
+                ", veterinarian='" + veterinarian + '\'' +
                 ", petName='" + petName + '\'' +
                 ", clientName='" + clientName + '\'' +
                 ", branch='" + branch + '\'' +

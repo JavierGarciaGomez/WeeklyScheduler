@@ -38,15 +38,13 @@
             </left>
             <center>
                 <ScrollPane>
-                    <HBox fillHeight="true">
+                    <GridPane HBox.hgrow="ALWAYS">
+                        <VBox fx:id="hoursHeader" HBox.hgrow="ALWAYS" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <HBox fx:id="daysOfWeekHeader" HBox.hgrow="ALWAYS" prefWidth="600" GridPane.rowIndex="0"
+                              GridPane.columnIndex="1"/>
+                        <GridPane fx:id="gridPane" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    </GridPane>
 
-                        <GridPane HBox.hgrow="ALWAYS">
-                            <VBox fx:id="hoursHeader" HBox.hgrow="ALWAYS" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                            <HBox fx:id="daysOfWeekHeader" HBox.hgrow="ALWAYS" prefWidth="600" GridPane.rowIndex="0"
-                                  GridPane.columnIndex="1"/>
-                            <GridPane fx:id="gridPane" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                        </GridPane>
-                    </HBox>
 
                 </ScrollPane>
 
