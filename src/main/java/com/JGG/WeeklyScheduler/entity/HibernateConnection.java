@@ -14,6 +14,7 @@ public class HibernateConnection {
                 .configure()
                 .addAnnotatedClass(User.class)
                 .addAnnotatedClass(TimeRegister.class)
+                .addAnnotatedClass(Appointment.class)
                 .buildSessionFactory();
         Session session = factory.getCurrentSession();
         System.out.println("Printing from constructor "+session);

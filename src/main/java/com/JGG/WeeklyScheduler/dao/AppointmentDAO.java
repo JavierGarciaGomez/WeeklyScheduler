@@ -2,6 +2,10 @@ package com.JGG.WeeklyScheduler.dao;
 
 
 import com.JGG.WeeklyScheduler.entity.Appointment;
+import com.JGG.WeeklyScheduler.entity.HibernateConnection;
+import com.JGG.WeeklyScheduler.entity.User;
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,19 +14,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppointmentDAO {
-
+    // todo delete static
     public List<Appointment> getAllApointments(){
-        // Database replicator
-        Appointment appointment = new Appointment("VET", "pet", "Client", "Montejo", "Consulta", "Garrapatas", LocalDate.now(), LocalTime.now());
-        Appointment appointment2 = new Appointment("VET2", "pet", "Client", "Montejo", "Consulta", "Garrapatas", LocalDate.now().plusDays(2), LocalTime.now().plusHours(1));
-        Appointment appointment3 = new Appointment("VET2", "pet", "Client", "Montejo", "Consulta", "Garrapatas", LocalDate.of(2020,8,11), LocalTime.of(17,0));
+        HibernateConnection hibernateConnection = HibernateConnection.getInstance();
+        Session session= hibernateConnection.getSession();
+        session.beginTransaction();
+        org.hibernate.query.Query <Appointment> query = session.createQuery("from Appointment", Appointment.class);
+        List<Appointment> appointments = query.getResultList();
+        System.out.println("get Appoitnments()\n"+appointments);
+        session.close();
+        return appointments;
+    }
 
-        List<Appointment> appointments = new ArrayList<>();
-        appointments.add(appointment);
-        appointments.add(appointment2);
-        appointments.add(appointment3);
-
-        // Returning
+    // todo delete static
+    public static List<Appointment> getAppointmentsBetweenDates(LocalDate firstDate, LocalDate lastDate){
+        HibernateConnection hibernateConnection = HibernateConnection.getInstance();
+        Session session= hibernateConnection.getSession();
+        session.beginTransaction();
+        org.hibernate.query.Query <Appointment> query = session.createQuery("from Appointment" +
+                " where date>=:firstDate and date<=:lastDate", Appointment.class);
+        query.setParameter("firstDate", firstDate);
+        query.setParameter("lastDate", lastDate);
+        List<Appointment> appointments = query.getResultList();
+        System.out.println("get AppoitnmentsBetweenDates()\n"+appointments);
+        session.close();
         return appointments;
     }
 
@@ -40,5 +55,32 @@ public class AppointmentDAO {
     }
 
 
+    // todo delete
+    public static void main(String[] args) {
+        LocalDate monday = LocalDate.of(2020,8, 10);
+
+        List<Appointment> appointments1 = new AppointmentDAO().getAllApointments();
+        List<Appointment> appointments2 = new AppointmentDAO().getAppointmentsBetweenDates(LocalDate.of(2020,8, 10), LocalDate.of(2020,8,16));
+
+        String[] availableHours = {"09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"};
+
+        // method to put in a label;
+        for(Appointment a:appointments2){
+
+            int dayIndex = a.getDate().getDayOfWeek().getValue();
+            int hourIndex = a.getTime().getHour();
+            String hourIndexString = (hourIndex+":00");
+            System.out.println(a + "dayIndex: "+dayIndex+" hourIndex: "+hourIndexString);
+            for(int i=0; i<availableHours.length; i++){
+                if(availableHours[i].equals(hourIndexString)){
+                    hourIndex=i+1;
+                }
+            }
+            System.out.println(a+"the index is. Day: "+dayIndex+" hour: "+hourIndex);
+
+
+        }
+
+    }
 
 }
