@@ -20,6 +20,7 @@ public class Model {
     public LocalDate AppointmentDate;
     public LocalTime AppontimenTime;
     public Appointment appointmentToEdit;
+    public String [] branches = {"Urban", "Harbor", "Montejo"};
 
 
     public static Model getInstance(){

@@ -23,9 +23,9 @@ public class ManageAppointmentController implements Initializable {
     public ComboBox<String> cboVet;
     public ComboBox<String> cboBranch;
     //Controller
-    private CalendarController2 calendarController2;
+    private CalendarController calendarController;
 
-    public Button btnRegister;
+    public Button btnSave;
     public Button btnCancel;
     public TextField txtClient;
     public TextField txtPet;
@@ -46,7 +46,7 @@ public class ManageAppointmentController implements Initializable {
         // fill the comboboxex
         try {
             ObservableList<String> userNames = new UserDAO().getUsersNames();
-            ObservableList<String> branchNames = FXCollections.observableArrayList("Urban", "Habror", "Montejo");
+            ObservableList<String> branchNames = FXCollections.observableArrayList("Urban", "Harbor", "Montejo");
             this.cboVet.setItems(userNames);
             this.cboBranch.setItems(branchNames);
         } catch (SQLException throwables) {
@@ -67,11 +67,11 @@ public class ManageAppointmentController implements Initializable {
         }
     }
 
-    public void initData(CalendarController2 calendarController2) {
-        this.calendarController2 = calendarController2;
+    public void initData(CalendarController calendarController) {
+        this.calendarController = calendarController;
     }
 
-    public void register() {
+    public void save() {
         String veterinarian = cboVet.getSelectionModel().getSelectedItem();
         String petName = txtPet.getText();
         String clientName = txtClient.getText();
@@ -109,12 +109,12 @@ public class ManageAppointmentController implements Initializable {
             if(Model.getInstance().appointmentToEdit!=null){
                 appointment.setId(Model.getInstance().appointmentToEdit.getId());
                 new AppointmentDAO().createAppointment(appointment);
-                Model.getInstance().appointmentToEdit=null;
             } else{
                 appointment.setId(0);
                 new AppointmentDAO().createAppointment(appointment);
             }
-            calendarController2.updateSchedule();
+            Model.getInstance().appointmentToEdit=null;
+            calendarController.updateSchedule();
             exit();
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -128,11 +128,12 @@ public class ManageAppointmentController implements Initializable {
         if(Model.getInstance().appointmentToEdit==null){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText(null);
-            alert.setContentText("It can't be deleted because the register is not created");
+            alert.setContentText("It can't be deleted because the save is not created");
             alert.showAndWait();
         } else{
             new AppointmentDAO().deleteAppointment(Model.getInstance().appointmentToEdit);
-            calendarController2.updateSchedule();
+            Model.getInstance().appointmentToEdit=null;
+            calendarController.updateSchedule();
             exit();
 
         }
@@ -142,5 +143,6 @@ public class ManageAppointmentController implements Initializable {
         Stage stage = (Stage) rootPane.getScene().getWindow();
         stage.close();
     }
+
 
 }

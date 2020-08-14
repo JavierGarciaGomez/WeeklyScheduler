@@ -13,9 +13,9 @@
     <Label text="Veterinarian"/>
     <Label text="Branch*" GridPane.rowIndex="1"/>
     <Label text="Client name" GridPane.rowIndex="2"/>
-    <TextField fx:id="txtClient" onKeyReleased="#generateUserName" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+    <TextField fx:id="txtClient" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
     <Label text="Pet Name*" GridPane.rowIndex="3"/>
-    <TextField fx:id="txtPet" onKeyReleased="#generateUserName" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+    <TextField fx:id="txtPet" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
     <Label text="Service*" GridPane.rowIndex="4"/>
     <TextField fx:id="txtService" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
     <Label text="Motive" GridPane.rowIndex="5"/>
@@ -31,7 +31,7 @@
     <ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="8">
         <buttons>
             <Button fx:id="btnDelete" mnemonicParsing="false" onAction="#delete" text="Delete" />
-            <Button fx:id="btnRegister" mnemonicParsing="false" onAction="#register" text="Register" />
+            <Button fx:id="btnSave" mnemonicParsing="false" onAction="#save" text="Save" />
             <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#exit" text="Cancel" />
         </buttons>
     </ButtonBar>

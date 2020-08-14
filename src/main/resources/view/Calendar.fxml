@@ -16,10 +16,10 @@
                          BorderPane.alignment="CENTER">
                     <Tab text="MAIN">
                         <!--todo add spacing spacing="8.0" BorderPane.alignment="CENTER"-->
-                        <VBox fx:id="panVboxLeft">
+                        <VBox fx:id="panVboxLeft" spacing="15.0">
                             <children>
                                 <Label text="Select date"/>
-                                <DatePicker fx:id="datePicker"/>
+                                <DatePicker fx:id="datePicker" onAction="#updateSchedule"/>
                                 <Button mnemonicParsing="false" text="Export to PDF"/>
                                 <Button mnemonicParsing="false" text="Export to Excel"/>
                                 <Button mnemonicParsing="false" text="Create new appointment"/>
@@ -30,24 +30,37 @@
                         </VBox>
                     </Tab>
                     <Tab text="VISIBILITY">
-                        <!--todo-->
-                        <VBox fx:id="panVboxRight">
-                        </VBox>
+
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+
+                            <VBox fx:id="branchCheckBoxes" prefHeight="200.0" prefWidth="100.0">
+                                <children>
+                                    <Button mnemonicParsing="false"
+                                            onAction="#selectCheckBoxBranches" text="Select all"/>
+                                    <Button mnemonicParsing="false"
+                                            onAction="#unselectCheckBoxBranches" text="Unselect all"/>
+                                </children>
+                            </VBox>
+                            <VBox fx:id="vetCheckBoxes" prefHeight="200.0" prefWidth="100.0">
+
+                                <Button mnemonicParsing="false"
+                                        onAction="#selectCheckBoxVets" text="Select all"/>
+                                <Button mnemonicParsing="false"
+                                        onAction="#unselectCheckBoxVets" text="Unselect all"/>
+                            </VBox>
+
+                        </HBox>
+
                     </Tab>
                 </TabPane>
             </left>
             <center>
-                <ScrollPane>
-                    <GridPane HBox.hgrow="ALWAYS">
-                        <VBox fx:id="hoursHeader" HBox.hgrow="ALWAYS" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                        <HBox fx:id="daysOfWeekHeader" HBox.hgrow="ALWAYS" prefWidth="600" GridPane.rowIndex="0"
-                              GridPane.columnIndex="1"/>
-                        <GridPane fx:id="gridPane" HBox.hgrow="ALWAYS" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+                            AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+                    <GridPane fx:id="gridPane" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+                              AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" HBox.hgrow="ALWAYS">
                     </GridPane>
-
-
                 </ScrollPane>
-
             </center>
         </BorderPane>
     </children>
