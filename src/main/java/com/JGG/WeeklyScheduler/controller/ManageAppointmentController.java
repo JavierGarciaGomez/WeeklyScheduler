@@ -3,14 +3,11 @@ package com.JGG.WeeklyScheduler.controller;
 import com.JGG.WeeklyScheduler.dao.AppointmentDAO;
 import com.JGG.WeeklyScheduler.dao.UserDAO;
 import com.JGG.WeeklyScheduler.entity.Appointment;
-import com.JGG.WeeklyScheduler.entity.User;
 import com.JGG.WeeklyScheduler.model.Model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -18,10 +15,10 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
+
 import java.util.ResourceBundle;
 
-public class AddAppointmentController implements Initializable {
+public class ManageAppointmentController implements Initializable {
     public GridPane rootPane;
     public ComboBox<String> cboVet;
     public ComboBox<String> cboBranch;
@@ -39,8 +36,6 @@ public class AddAppointmentController implements Initializable {
     public TextArea txtMotive;
     // todo
     // These fields are for mouse dragging of window
-    private double xOffset;
-    private double yOffset;
 
 
     @Override
@@ -76,7 +71,7 @@ public class AddAppointmentController implements Initializable {
         this.calendarController2 = calendarController2;
     }
 
-    public void register(ActionEvent event) {
+    public void register() {
         String veterinarian = cboVet.getSelectionModel().getSelectedItem();
         String petName = txtPet.getText();
         String clientName = txtClient.getText();
@@ -129,79 +124,23 @@ public class AddAppointmentController implements Initializable {
         }
     }
 
-    public void checkDigits(TextField textField, String regex) {
-        TextFormatter<String> formatter = new TextFormatter<>(change -> {
-            change.setText(change.getText().replaceAll(regex, ""));
-            return change;
-        });
-        textField.setTextFormatter(formatter);
-    }
+    public void delete() {
+        if(Model.getInstance().appointmentToEdit==null){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null);
+            alert.setContentText("It can't be deleted because the register is not created");
+            alert.showAndWait();
+        } else{
+            new AppointmentDAO().deleteAppointment(Model.getInstance().appointmentToEdit);
+            calendarController2.updateSchedule();
+            exit();
 
-    public void validateNumbers(KeyEvent keyEvent) {
-/*
-        DecimalFormat format = new DecimalFormat("#.0");
-        txtId.setTextFormatter(new TextFormatter<>(c ->
-        {
-            System.out.println(c.getText());
-            if (c.getControlNewText().isEmpty()) {
-                return c;
-            }
-
-            ParsePosition parsePosition = new ParsePosition(0);
-            Object object = format.parse(c.getControlNewText(), parsePosition);
-
-            if (object == null || parsePosition.getIndex() < c.getControlNewText().length()) {
-                return null;
-            } else {
-                return c;
-            }
-        }));
-*/
-    }
-
-    public void generateUserName() {
-        /*try{
-            String name = txtName.getText();
-            String lastName = txtlastName.getText();
-            String fullName = name + " " + lastName;
-            String[] nameElements = fullName.split("\\s+");
-
-            char firstChar = nameElements[0].charAt(0);
-            char secondChar = nameElements[nameElements.length - 2].charAt(0);
-            char thirdChar = nameElements[nameElements.length - 1].charAt(0);
-            String userName = (firstChar + Character.toString(secondChar) + thirdChar).toUpperCase();
-
-            txtUser.setText(userName);
-        } catch (IndexOutOfBoundsException ignored){
-
-        }*/
-    }
-
-    public void addPicture(User user) {/*
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/AddImage.fxml"));
-            Parent root = fxmlLoader.load();
-            AddImageController controller = fxmlLoader.getController();
-            controller.initData(user);
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.showAndWait();
-
-            Stage thisStage = (Stage) btnCancel.getScene().getWindow();
-            thisStage.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-*/
-
     }
-
 
     public void exit() {
         Stage stage = (Stage) rootPane.getScene().getWindow();
         stage.close();
     }
+
 }

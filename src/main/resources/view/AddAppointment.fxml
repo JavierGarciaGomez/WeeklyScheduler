@@ -38,6 +38,7 @@
     </HBox>
     <ButtonBar GridPane.columnSpan="2" GridPane.rowIndex="8">
         <buttons>
+         <Button fx:id="btnRegister1" mnemonicParsing="false" onAction="#delete" text="Delete" />
             <Button fx:id="btnRegister" mnemonicParsing="false" onAction="#register" text="Register" />
             <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#exit" text="Cancel" />
         </buttons>

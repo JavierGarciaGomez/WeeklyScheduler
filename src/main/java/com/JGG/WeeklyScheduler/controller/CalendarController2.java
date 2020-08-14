@@ -296,7 +296,7 @@ public class CalendarController2 implements Initializable {
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/AddAppointment.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/ManageAppointment.fxml"));
             Parent root = fxmlLoader.load();
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -305,7 +305,7 @@ public class CalendarController2 implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Manage users");
 
-            AddAppointmentController controller = fxmlLoader.getController();
+            ManageAppointmentController controller = fxmlLoader.getController();
             controller.initData(this);
 
             stage.showAndWait();
@@ -353,7 +353,7 @@ public class CalendarController2 implements Initializable {
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/AddAppointment.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/ManageAppointment.fxml"));
             Parent root = null;
 
             root = fxmlLoader.load();
@@ -364,7 +364,7 @@ public class CalendarController2 implements Initializable {
             stage.setScene(scene);
             stage.setTitle("Manage users");
 
-            AddAppointmentController controller = fxmlLoader.getController();
+            ManageAppointmentController controller = fxmlLoader.getController();
             controller.initData(this);
 
             stage.showAndWait();

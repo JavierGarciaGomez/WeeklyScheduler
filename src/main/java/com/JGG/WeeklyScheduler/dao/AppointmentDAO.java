@@ -73,6 +73,16 @@ public class AppointmentDAO {
         session.close();
     }
 
+    public void deleteAppointment(Appointment appointment){
+        HibernateConnection hibernateConnection = HibernateConnection.getInstance();
+        Session session= hibernateConnection.getSession();
+        session.beginTransaction();
+        session.delete(appointment);
+        session.getTransaction().commit();
+        System.out.println("deleting appointment" + this);
+        session.close();
+    }
+
 
     // todo delete
     public static void main(String[] args) {
