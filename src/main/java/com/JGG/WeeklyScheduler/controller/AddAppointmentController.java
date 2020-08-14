@@ -1,48 +1,75 @@
 package com.JGG.WeeklyScheduler.controller;
 
-import com.JGG.WeeklyScheduler.entity.HibernateConnection;
+import com.JGG.WeeklyScheduler.dao.AppointmentDAO;
+import com.JGG.WeeklyScheduler.dao.UserDAO;
+import com.JGG.WeeklyScheduler.entity.Appointment;
 import com.JGG.WeeklyScheduler.entity.User;
+import com.JGG.WeeklyScheduler.model.Model;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
-import java.text.ParsePosition;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class AddAppointmentController implements Initializable {
     public GridPane rootPane;
+    public ComboBox<String> cboVet;
+    public ComboBox<String> cboBranch;
     //Controller
     private CalendarController2 calendarController2;
 
     public Button btnRegister;
     public Button btnCancel;
-    public TextField txtVet;
-    public TextField txtBranch;
     public TextField txtClient;
     public TextField txtPet;
     public TextField txtService;
     public DatePicker datePicker;
-    public Spinner spinHour;
-    public Spinner spinMin;
-    public TextField txtMotive;
+    public Spinner<Integer> spinHour;
+    public Spinner<Integer> spinMin;
+    public TextArea txtMotive;
     // todo
     // These fields are for mouse dragging of window
     private double xOffset;
     private double yOffset;
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        datePicker.setValue(Model.getInstance().AppointmentDate);
+        spinHour.getValueFactory().setValue(Model.getInstance().AppontimenTime.getHour());
+
+        // fill the comboboxex
+        try {
+            ObservableList<String> userNames = new UserDAO().getUsersNames();
+            ObservableList<String> branchNames = FXCollections.observableArrayList("Urban", "Habror", "Montejo");
+            this.cboVet.setItems(userNames);
+            this.cboBranch.setItems(branchNames);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        if(Model.getInstance().appointmentToEdit!=null){
+            cboVet.getSelectionModel().select(Model.getInstance().appointmentToEdit.getVeterinarian());
+            txtPet.setText(Model.getInstance().appointmentToEdit.getPetName());
+            txtClient.setText(Model.getInstance().appointmentToEdit.getClientName());
+            cboBranch.getSelectionModel().select(Model.getInstance().appointmentToEdit.getBranch());
+            txtService.setText(Model.getInstance().appointmentToEdit.getClientName());
+            txtMotive.setText(Model.getInstance().appointmentToEdit.getMotive());
+            datePicker.setValue(Model.getInstance().appointmentToEdit.getDate());
+            spinHour.getValueFactory().setValue(Model.getInstance().appointmentToEdit.getTime().getHour());
+            spinMin.getValueFactory().setValue(Model.getInstance().appointmentToEdit.getTime().getMinute());
+
+        }
     }
 
     public void initData(CalendarController2 calendarController2) {
@@ -50,57 +77,56 @@ public class AddAppointmentController implements Initializable {
     }
 
     public void register(ActionEvent event) {
+        String veterinarian = cboVet.getSelectionModel().getSelectedItem();
+        String petName = txtPet.getText();
+        String clientName = txtClient.getText();
+        String branch = cboBranch.getSelectionModel().getSelectedItem();
+        String service = txtService.getText();
+        String motive = txtMotive.getText();
+        LocalDate date = datePicker.getValue();
+        LocalTime time = LocalTime.of(spinHour.getValue(), spinMin.getValue());
+
+        String errorList = "The appointment couldn't be registered, because of the following errors :\n";
         boolean isValid = true;
-/*
-        int id = Integer.parseInt(txtId.getText());
-        String name = txtName.getText();
-        String lastName = txtlastName.getText();
-        String userName = txtUser.getText().toUpperCase();
-        String pass = txtPass.getText();
-        boolean isActive = chkActive.isSelected();
-        String errorList = "No se ha podido registrar el usuario, porque se encontraron los siguientes errores:\n";
-
-        User user = new User(id, name, lastName, userName, pass, isActive);
-
-        try {
-
-            if (!user.checkAvailableId()) {
-                errorList += "Id ya registrado\n";
-                isValid = false;
+        if (branch.equals("")) {
+            errorList += "The branch mustn't be empty\n";
+            isValid = false;
+        }
+        if (petName.equals("")) {
+            errorList += "The pet name mustn't be empty\n";
+            isValid = false;
+        }
+        if (service.equals("")) {
+            errorList += "The service mustn't be empty\n";
+            isValid = false;
+        }
+        if (date == null) {
+            errorList += "The date mustn't be empty\n";
+            isValid = false;
+        }
+        if (time == null) {
+            errorList += "The time mustn't be empty\n";
+            isValid = false;
+        }
+        if (isValid) {
+            // TODO test 20200810... Before user.addUser();
+            Appointment appointment = new Appointment(veterinarian, petName, clientName, branch, service, motive, date, time);
+            if(Model.getInstance().appointmentToEdit!=null){
+                appointment.setId(Model.getInstance().appointmentToEdit.getId());
+                new AppointmentDAO().createAppointment(appointment);
+                Model.getInstance().appointmentToEdit=null;
+            } else{
+                appointment.setId(0);
+                new AppointmentDAO().createAppointment(appointment);
             }
-            if (name.length() <= 3) {
-                errorList += "El nombre no puede tener menos de tres caracteres\n";
-                isValid = false;
-            }
-            if (lastName.length() <= 3) {
-                errorList += "El apellido no puede tener menos de tres caracteres\n";
-                isValid = false;
-            }
-            if (userName.length() != 3) {
-                errorList += "El usuario se debe conformar por tres caracteres\n";
-                isValid = false;
-            }
-            if (!user.checkAvailableUser()) {
-                errorList += "Usuario ya registrado\n";
-                isValid = false;
-            }
-            if (pass.length() < 4 || pass.length() > 11) {
-                errorList += "El password debe tener entre 4 y 10 caracteres\n";
-                isValid = false;
-            }
-            if (isValid) {
-                // TODO test 20200810... Before user.addUser();
-                user.createUser();
-                addPicture(user);
-            } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setHeaderText(null);
-                alert.setContentText(errorList);
-                alert.showAndWait();
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }*/
+            calendarController2.updateSchedule();
+            exit();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null);
+            alert.setContentText(errorList);
+            alert.showAndWait();
+        }
     }
 
     public void checkDigits(TextField textField, String regex) {
@@ -174,7 +200,7 @@ public class AddAppointmentController implements Initializable {
     }
 
 
-    public void cancel(ActionEvent actionEvent) {
+    public void exit() {
         Stage stage = (Stage) rootPane.getScene().getWindow();
         stage.close();
     }

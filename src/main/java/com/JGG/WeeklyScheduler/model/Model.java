@@ -2,6 +2,8 @@ package com.JGG.WeeklyScheduler.model;
 
 
 
+import com.JGG.WeeklyScheduler.entity.Appointment;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,8 +17,9 @@ public class Model {
     public LocalDate mondayOfTheWeek;
     public LocalDate lastDayOfMonth;
     public final String [] weekDaysNames = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-    public LocalDate AppontimentDate;
+    public LocalDate AppointmentDate;
     public LocalTime AppontimenTime;
+    public Appointment appointmentToEdit;
 
 
     public static Model getInstance(){

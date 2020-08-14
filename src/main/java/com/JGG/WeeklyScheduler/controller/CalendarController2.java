@@ -19,17 +19,13 @@ import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CalendarController2 implements Initializable {
     public BorderPane borderPane;
@@ -156,7 +152,7 @@ public class CalendarController2 implements Initializable {
                 vBox.setMinWidth(gridPane.getPrefWidth() / 8);
 
                 vBox.addEventHandler(MouseEvent.MOUSE_CLICKED, (mouseEvent -> {
-                    addAppointments(vBox);
+                    addAppointment(vBox);
                 }));
                 // set vGrow to always expand or shrink
                 GridPane.setVgrow(vBox, Priority.ALWAYS);
@@ -235,7 +231,8 @@ public class CalendarController2 implements Initializable {
 
             label.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
 
-                editEvent((VBox) label.getParent(), label.getText(), label.getAccessibleText());
+                //editAppointment((VBox) label.getParent(), label.getText(), label.getAccessibleText());
+                editAppointment((VBox) label.getParent(), a.getId());
             });
 
             // Mouse effects
@@ -281,18 +278,18 @@ public class CalendarController2 implements Initializable {
     }
 
     @FXML
-    private void updateSchedule() {
+    public void updateSchedule() {
         Model.getInstance().selectedLocalDate = datePicker.getValue();
         loadGrid();
     }
 
-    private void addAppointments(VBox day) {
+    private void addAppointment(VBox day) {
 
         LocalDate appointmentDate = getAppointmentDate(day);
         LocalTime appointmentTime = getAppointmentTime(day);
-        System.out.println(appointmentDate+" "+appointmentTime);
+        System.out.println(appointmentDate + " " + appointmentTime);
 
-        Model.getInstance().AppontimentDate = appointmentDate;
+        Model.getInstance().AppointmentDate = appointmentDate;
         Model.getInstance().AppontimenTime = appointmentTime;
 
         // Open the view
@@ -327,7 +324,7 @@ public class CalendarController2 implements Initializable {
             if (GridPane.getColumnIndex(node) != null && GridPane.getRowIndex(node) != null) {
                 if (node.equals(day)) {
                     int daysToAdd = GridPane.getColumnIndex(node);
-                    return localDate.plusDays(daysToAdd-1);
+                    return localDate.plusDays(daysToAdd - 1);
                 }
             }
         }
@@ -336,13 +333,13 @@ public class CalendarController2 implements Initializable {
     }
 
     private LocalTime getAppointmentTime(VBox day) {
-        LocalTime localTime = LocalTime.of(9,0);
+        LocalTime localTime = LocalTime.of(9, 0);
 
         for (Node node : gridPane.getChildren()) {
             if (GridPane.getColumnIndex(node) != null && GridPane.getRowIndex(node) != null) {
                 if (node.equals(day)) {
                     int hoursToAdd = GridPane.getRowIndex(node);
-                    return localTime.plusHours(hoursToAdd-1);
+                    return localTime.plusHours(hoursToAdd - 1);
                 }
             }
         }
@@ -350,8 +347,32 @@ public class CalendarController2 implements Initializable {
     }
 
 
-    private void editEvent(VBox parent, String text, String accessibleText) {
-        System.out.println("Label Pushed");
+    private void editAppointment(VBox parent, int appointmentId) {
+        Model.getInstance().appointmentToEdit = new AppointmentDAO().getAppointmentbyId(appointmentId);
+
+        try {
+            // Load root layout from fxml file.
+            FXMLLoader loader = new FXMLLoader();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/AddAppointment.fxml"));
+            Parent root = null;
+
+            root = fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Manage users");
+
+            AddAppointmentController controller = fxmlLoader.getController();
+            controller.initData(this);
+
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

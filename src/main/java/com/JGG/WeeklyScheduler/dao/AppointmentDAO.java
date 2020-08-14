@@ -41,6 +41,15 @@ public class AppointmentDAO {
         return appointments;
     }
 
+    public Appointment getAppointmentbyId(int id) {
+        HibernateConnection hibernateConnection = HibernateConnection.getInstance();
+        Session session= hibernateConnection.getSession();
+        session.beginTransaction();
+        Appointment appointment= session.get(Appointment.class, id);
+        session.close();
+        return appointment;
+    }
+
     public List<Appointment> getAppointmenByDateTime(LocalDate localDate, LocalTime localTime){
         List<Appointment> allApointments = this.getAllApointments();
         List<Appointment> appointments = new ArrayList<>();
@@ -52,6 +61,16 @@ public class AppointmentDAO {
             }
         }
         return appointments;
+    }
+
+    public void createAppointment(Appointment appointment) {
+        HibernateConnection hibernateConnection = HibernateConnection.getInstance();
+        Session session= hibernateConnection.getSession();
+        session.beginTransaction();
+        session.saveOrUpdate(appointment);
+        session.getTransaction().commit();
+        System.out.println("Inserting new appointment" + this);
+        session.close();
     }
 
 
