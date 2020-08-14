@@ -4,20 +4,32 @@ import com.JGG.WeeklyScheduler.dao.AppointmentDAO;
 import com.JGG.WeeklyScheduler.entity.Appointment;
 import com.JGG.WeeklyScheduler.model.Model;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CalendarController2 implements Initializable {
     public BorderPane borderPane;
@@ -141,7 +153,7 @@ public class CalendarController2 implements Initializable {
                 //todo change the name and add styles
                 vBox.getStyleClass().add("calendar_pane");
                 // todo check if neccesary
-                vBox.setMinWidth(gridPane.getPrefWidth()/8);
+                vBox.setMinWidth(gridPane.getPrefWidth() / 8);
 
                 vBox.addEventHandler(MouseEvent.MOUSE_CLICKED, (mouseEvent -> {
                     addAppointments(vBox);
@@ -177,8 +189,8 @@ public class CalendarController2 implements Initializable {
 
             //change day if gets to the lasy day of the month
             if (dayDateLabel > lastDayOfMonth) dayDateLabel = 1;
-            Label lbl = new Label(Model.getInstance().weekDaysNames[i - 1] + "\n" + Integer.toString(dayDateLabel)+
-                    "/"+Integer.toString(monthDateLabel));
+            Label lbl = new Label(Model.getInstance().weekDaysNames[i - 1] + "\n" + Integer.toString(dayDateLabel) +
+                    "/" + Integer.toString(monthDateLabel));
 
             lbl.setStyle("-fx-text-fill:darkslategray");
 
@@ -211,16 +223,37 @@ public class CalendarController2 implements Initializable {
                 }
             }
 
-            Label label = new Label(a.getService()+"-"+a.getPetName());
+            Label label = new Label(a.getService() + "-" + a.getPetName());
             label.setAlignment(Pos.CENTER);
             label.setMaxWidth(Double.MAX_VALUE);
             label.setTextAlignment(TextAlignment.CENTER);
+            label.getStyleClass().add("event-label");
+            label.setStyle("-fx-background-color: rgb(" + 201 +
+                    ", " + 250 + ", " + 76 + ", " + 1 + ");");
+
+            label.setAccessibleText(String.valueOf(a.getId()));
+
+            label.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
+
+                editEvent((VBox) label.getParent(), label.getText(), label.getAccessibleText());
+            });
+
+            // Mouse effects
+            label.addEventHandler(MouseEvent.MOUSE_ENTERED, (e) -> {
+                label.getScene().setCursor(Cursor.HAND);
+            });
+
+            label.addEventHandler(MouseEvent.MOUSE_EXITED, (e) -> {
+                label.getScene().setCursor(Cursor.DEFAULT);
+            });
+
 
             VBox vBox = (VBox) getNodeFromGridPane(gridPane, dayIndex, hourIndex);
 
             vBox.getChildren().add(label);
         }
     }
+
 
     private void clearAppointmentsGrid() {
         int rows = 13;
@@ -249,14 +282,76 @@ public class CalendarController2 implements Initializable {
 
     @FXML
     private void updateSchedule() {
-        Model.getInstance().selectedLocalDate=datePicker.getValue();
+        Model.getInstance().selectedLocalDate = datePicker.getValue();
         loadGrid();
     }
 
-    private void addAppointments(VBox vBox) {
-        // Todo
-        System.out.println("Pushed");
+    private void addAppointments(VBox day) {
+
+        LocalDate appointmentDate = getAppointmentDate(day);
+        LocalTime appointmentTime = getAppointmentTime(day);
+        System.out.println(appointmentDate+" "+appointmentTime);
+
+        Model.getInstance().AppontimentDate = appointmentDate;
+        Model.getInstance().AppontimenTime = appointmentTime;
+
+        // Open the view
+        try {
+            // Load root layout from fxml file.
+            FXMLLoader loader = new FXMLLoader();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("view/AddAppointment.fxml"));
+            Parent root = fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.setTitle("Manage users");
+
+            AddAppointmentController controller = fxmlLoader.getController();
+            controller.initData(this);
+
+            stage.showAndWait();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            //Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
+
+    private LocalDate getAppointmentDate(VBox day) {
+        LocalDate localDate = Model.getInstance().mondayOfTheWeek;
+
+        for (Node node : gridPane.getChildren()) {
+            if (GridPane.getColumnIndex(node) != null && GridPane.getRowIndex(node) != null) {
+                if (node.equals(day)) {
+                    int daysToAdd = GridPane.getColumnIndex(node);
+                    return localDate.plusDays(daysToAdd-1);
+                }
+            }
+        }
+        return null;
+
+    }
+
+    private LocalTime getAppointmentTime(VBox day) {
+        LocalTime localTime = LocalTime.of(9,0);
+
+        for (Node node : gridPane.getChildren()) {
+            if (GridPane.getColumnIndex(node) != null && GridPane.getRowIndex(node) != null) {
+                if (node.equals(day)) {
+                    int hoursToAdd = GridPane.getRowIndex(node);
+                    return localTime.plusHours(hoursToAdd-1);
+                }
+            }
+        }
+        return null;
+    }
+
+
+    private void editEvent(VBox parent, String text, String accessibleText) {
+        System.out.println("Label Pushed");
+    }
 
 }

@@ -20,5 +20,6 @@ module AttendanceControlMaven {
     opens com.JGG.WeeklyScheduler.controller;
     opens view;
 
+
     exports com.JGG.WeeklyScheduler.controller;
 }
