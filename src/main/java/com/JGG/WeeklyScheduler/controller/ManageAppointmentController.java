@@ -3,6 +3,7 @@ package com.JGG.WeeklyScheduler.controller;
 import com.JGG.WeeklyScheduler.dao.AppointmentDAO;
 import com.JGG.WeeklyScheduler.dao.UserDAO;
 import com.JGG.WeeklyScheduler.entity.Appointment;
+import com.JGG.WeeklyScheduler.entity.Utilities;
 import com.JGG.WeeklyScheduler.model.Model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,6 +23,8 @@ public class ManageAppointmentController implements Initializable {
     public GridPane rootPane;
     public ComboBox<String> cboVet;
     public ComboBox<String> cboBranch;
+    public Button btnDelete;
+    public TextField txtPhone;
     //Controller
     private CalendarController calendarController;
 
@@ -40,9 +43,6 @@ public class ManageAppointmentController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        datePicker.setValue(Model.getInstance().AppointmentDate);
-        spinHour.getValueFactory().setValue(Model.getInstance().AppontimenTime.getHour());
-
         // fill the comboboxex
         try {
             ObservableList<String> userNames = new UserDAO().getUsersNames();
@@ -58,12 +58,14 @@ public class ManageAppointmentController implements Initializable {
             txtPet.setText(Model.getInstance().appointmentToEdit.getPetName());
             txtClient.setText(Model.getInstance().appointmentToEdit.getClientName());
             cboBranch.getSelectionModel().select(Model.getInstance().appointmentToEdit.getBranch());
-            txtService.setText(Model.getInstance().appointmentToEdit.getClientName());
+            txtService.setText(Model.getInstance().appointmentToEdit.getService());
             txtMotive.setText(Model.getInstance().appointmentToEdit.getMotive());
             datePicker.setValue(Model.getInstance().appointmentToEdit.getDate());
             spinHour.getValueFactory().setValue(Model.getInstance().appointmentToEdit.getTime().getHour());
             spinMin.getValueFactory().setValue(Model.getInstance().appointmentToEdit.getTime().getMinute());
-
+        } else{
+            datePicker.setValue(Model.getInstance().AppointmentDate);
+            spinHour.getValueFactory().setValue(Model.getInstance().AppontimenTime.getHour());
         }
     }
 
@@ -78,6 +80,7 @@ public class ManageAppointmentController implements Initializable {
         String branch = cboBranch.getSelectionModel().getSelectedItem();
         String service = txtService.getText();
         String motive = txtMotive.getText();
+        String phone = txtPhone.getText();
         LocalDate date = datePicker.getValue();
         LocalTime time = LocalTime.of(spinHour.getValue(), spinMin.getValue());
 
@@ -105,7 +108,7 @@ public class ManageAppointmentController implements Initializable {
         }
         if (isValid) {
             // TODO test 20200810... Before user.addUser();
-            Appointment appointment = new Appointment(veterinarian, petName, clientName, branch, service, motive, date, time);
+            Appointment appointment = new Appointment(branch, veterinarian, petName, clientName, branch, service, motive, date, time);
             if(Model.getInstance().appointmentToEdit!=null){
                 appointment.setId(Model.getInstance().appointmentToEdit.getId());
                 new AppointmentDAO().createAppointment(appointment);
@@ -125,12 +128,18 @@ public class ManageAppointmentController implements Initializable {
     }
 
     public void delete() {
+
+
+
         if(Model.getInstance().appointmentToEdit==null){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText(null);
             alert.setContentText("It can't be deleted because the save is not created");
             alert.showAndWait();
         } else{
+            String confirmationTxt = "¿Are you sure that you want to delete this appointment?";
+            boolean answer = new Utilities().showAlert(Alert.AlertType.CONFIRMATION, "Confirmation", confirmationTxt);
+            if(!answer) return;
             new AppointmentDAO().deleteAppointment(Model.getInstance().appointmentToEdit);
             Model.getInstance().appointmentToEdit=null;
             calendarController.updateSchedule();

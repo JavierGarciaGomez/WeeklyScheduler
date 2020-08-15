@@ -99,9 +99,11 @@ public class CalendarController implements Initializable {
         // loop for each day
         for (int i = 1; i < gridPane.getColumnCount(); i++) {
             StackPane stackPane = new StackPane();
+            stackPane.getStyleClass().add("grid-header");
+
             // Make panes take up equal space
             HBox.setHgrow(stackPane, Priority.ALWAYS);
-            stackPane.setMaxWidth(Double.MAX_VALUE);
+
             // Note: After adding a label to this, it tries to resize itself..
             // So I'm setting a minimum width.
             stackPane.setMinWidth(gridPane.getPrefWidth() / 8);
@@ -126,9 +128,7 @@ public class CalendarController implements Initializable {
             StackPane stackPane = new StackPane();
             // Make panes take up equal space
             // todo review styles
-            stackPane.getStyleClass().add("weekday-header");
-            stackPane.setStyle("-fx-backgroud-color: white");
-            stackPane.setStyle("-fx-font: 14px \"System\" ");
+            stackPane.getStyleClass().add("grid-header");
 
             HBox.setHgrow(stackPane, Priority.ALWAYS);
             stackPane.setMaxWidth(Double.MAX_VALUE);
@@ -137,8 +137,8 @@ public class CalendarController implements Initializable {
             stackPane.setMinWidth(gridPane.getPrefWidth() / gridPane.getRowCount());
             // Create label and add it
             Label lbl = new Label(availableHours[i - 1]);
-            lbl.setPadding(new Insets(5));
-            lbl.setStyle("-fx-text-fill:darkslategray");
+            lbl.setPadding(new Insets(2));
+
             stackPane.getChildren().add(lbl);
             // add the pane to the grid
             gridPane.add(stackPane, 0, i);
@@ -213,16 +213,17 @@ public class CalendarController implements Initializable {
             // retrieve pane for each grid
             StackPane dayHeader = (StackPane) getNodeFromGridPane(gridPane, i, 0);
             dayHeader.getChildren().clear();
-            // todo style
-            dayHeader.setStyle("-fx-backgroud-color: white");
-            dayHeader.setStyle("-fx-font: 14px \"System\" ");
+            
+
 
             //change day if gets to the lasy day of the month
             if (dayDateLabel > lastDayOfMonth) dayDateLabel = 1;
             Label lbl = new Label(Model.getInstance().weekDaysNames[i - 1] + "\n" + Integer.toString(dayDateLabel) +
                     "/" + Integer.toString(monthDateLabel));
 
-            lbl.setStyle("-fx-text-fill:darkslategray");
+
+
+
 
             dayHeader.getChildren().add(lbl);
             dayDateLabel++;
@@ -257,7 +258,7 @@ public class CalendarController implements Initializable {
             label.setAlignment(Pos.CENTER);
             label.setMaxWidth(Double.MAX_VALUE);
             label.setTextAlignment(TextAlignment.CENTER);
-            label.getStyleClass().add("event-label");
+            label.getStyleClass().add("appointment-label");
 
             if (a.getBranch() != null) {
                 switch (a.getBranch()) {
@@ -465,7 +466,7 @@ public class CalendarController implements Initializable {
             label.setAlignment(Pos.CENTER);
             label.setMaxWidth(Double.MAX_VALUE);
             label.setTextAlignment(TextAlignment.CENTER);
-            label.getStyleClass().add("event-label");
+            label.getStyleClass().add("appointment-label");
 
             if (a.getBranch() != null) {
                 switch (a.getBranch()) {
@@ -485,7 +486,6 @@ public class CalendarController implements Initializable {
 
 
             label.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
-
                 //editAppointment((VBox) label.getParent(), label.getText(), label.getAccessibleText());
                 editAppointment((VBox) label.getParent(), a.getId());
             });
