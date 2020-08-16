@@ -110,15 +110,16 @@ public class AppointmentDAO {
     }
 
     public List<Appointment> getFilteredAppointments(LocalDate monday, LocalDate sunday, List<String> branchFilters, List<String> vetFilters) {
-        HibernateConnection hibernateConnection = HibernateConnection.getInstance();
         List<Appointment> appointments = getAppointmentsBetweenDates(monday, sunday);
         List<Appointment> filteredAppointments = new ArrayList<>();
         for(Appointment appointment:appointments){
             for(String branch:branchFilters){
                 if(appointment.getBranch().equals(branch)){
                     for(String vetName:vetFilters){
-                        if(appointment.getVeterinarian().equals(vetName)){
-                            filteredAppointments.add(appointment);
+                        if (appointment.getVeterinarian()!=null){
+                            if(appointment.getVeterinarian().equals(vetName)){
+                                filteredAppointments.add(appointment);
+                            }
                         }
                     }
                 }

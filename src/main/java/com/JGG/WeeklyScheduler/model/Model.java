@@ -17,8 +17,8 @@ public class Model {
     public LocalDate mondayOfTheWeek;
     public LocalDate lastDayOfMonth;
     public final String [] weekDaysNames = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-    public LocalDate AppointmentDate;
-    public LocalTime AppontimenTime;
+    public LocalDate appointmentDate;
+    public LocalTime appontimenTime;
     public Appointment appointmentToEdit;
     public String [] branches = {"Urban", "Harbor", "Montejo"};
 

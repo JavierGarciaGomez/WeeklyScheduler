@@ -128,4 +128,19 @@ public class Appointment {
     }
 
 
+    @Override
+    public String toString() {
+        return "Appointment{" +
+                "id=" + id +
+                ", branch='" + branch + '\'' +
+                ", veterinarian='" + veterinarian + '\'' +
+                ", clientName='" + clientName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", petName='" + petName + '\'' +
+                ", service='" + service + '\'' +
+                ", motive='" + motive + '\'' +
+                ", date=" + date +
+                ", time=" + time +
+                '}';
+    }
 }

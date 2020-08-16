@@ -241,7 +241,7 @@ public class CalendarController implements Initializable {
         LocalDate monday = Model.getInstance().mondayOfTheWeek;
         LocalDate sunday = monday.plusDays(6);
         List<Appointment> appointmentsInTheWeek = new AppointmentDAO().getAppointmentsBetweenDates(monday, sunday);
-        String[] availableHours = {"09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"};
+        String[] availableHours = {"9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"};
 
         // method to put in a label;
         for (Appointment a : appointmentsInTheWeek) {
@@ -250,9 +250,17 @@ public class CalendarController implements Initializable {
             String hourIndexString = (hourIndex + ":00");
             for (int i = 0; i < availableHours.length; i++) {
                 if (availableHours[i].equals(hourIndexString)) {
+                    System.out.println(a.getPetName()+hourIndexString+" found");
                     hourIndex = i + 1;
+                    System.out.println(a.getPetName()+hourIndex);
+                    //todo delete
                 }
             }
+            if(hourIndex>12){
+                System.out.println(a.getPetName()+hourIndexString+"changed hour index, from "+hourIndex);
+                hourIndex=12;
+            }
+
 
             Label label = new Label(a.getService() + "-" + a.getPetName());
             label.setAlignment(Pos.CENTER);
@@ -292,8 +300,12 @@ public class CalendarController implements Initializable {
                 label.getScene().setCursor(Cursor.DEFAULT);
             });
 
+            System.out.println("grid pane rows: "+gridPane.getRowCount());
+            System.out.println("Searching "+a+"day index"+dayIndex+"row index"+hourIndex);
+
 
             VBox vBox = (VBox) getNodeFromGridPane(gridPane, dayIndex, hourIndex);
+
 
             vBox.getChildren().add(label);
         }
@@ -337,8 +349,8 @@ public class CalendarController implements Initializable {
         LocalTime appointmentTime = getAppointmentTime(day);
         System.out.println(appointmentDate + " " + appointmentTime);
 
-        Model.getInstance().AppointmentDate = appointmentDate;
-        Model.getInstance().AppontimenTime = appointmentTime;
+        Model.getInstance().appointmentDate = appointmentDate;
+        Model.getInstance().appontimenTime = appointmentTime;
 
         // Open the view
         try {
@@ -352,6 +364,7 @@ public class CalendarController implements Initializable {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Manage users");
+
 
             ManageAppointmentController controller = fxmlLoader.getController();
             controller.initData(this);

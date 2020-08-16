@@ -64,13 +64,21 @@ public class ManageAppointmentController implements Initializable {
             spinHour.getValueFactory().setValue(Model.getInstance().appointmentToEdit.getTime().getHour());
             spinMin.getValueFactory().setValue(Model.getInstance().appointmentToEdit.getTime().getMinute());
         } else{
-            datePicker.setValue(Model.getInstance().AppointmentDate);
-            spinHour.getValueFactory().setValue(Model.getInstance().AppontimenTime.getHour());
+            datePicker.setValue(Model.getInstance().appointmentDate);
+            spinHour.getValueFactory().setValue(Model.getInstance().appontimenTime.getHour());
         }
     }
 
     public void initData(CalendarController calendarController) {
         this.calendarController = calendarController;
+        Stage stage = (Stage) rootPane.getScene().getWindow();
+        stage.setOnHiding(event -> {
+            System.out.println("Window closed");
+            Model.getInstance().appointmentToEdit=null;
+            Model.getInstance().appontimenTime =null;
+            Model.getInstance().appontimenTime =null;
+        });
+
     }
 
     public void save() {
@@ -108,7 +116,7 @@ public class ManageAppointmentController implements Initializable {
         }
         if (isValid) {
             // TODO test 20200810... Before user.addUser();
-            Appointment appointment = new Appointment(branch, veterinarian, petName, clientName, branch, service, motive, date, time);
+            Appointment appointment = new Appointment(branch, veterinarian, clientName, phone, petName, service, motive, date, time);
             if(Model.getInstance().appointmentToEdit!=null){
                 appointment.setId(Model.getInstance().appointmentToEdit.getId());
                 new AppointmentDAO().createAppointment(appointment);
@@ -152,6 +160,8 @@ public class ManageAppointmentController implements Initializable {
         Stage stage = (Stage) rootPane.getScene().getWindow();
         stage.close();
     }
+
+
 
 
 }
